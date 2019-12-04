@@ -9,6 +9,16 @@ const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
 const dbPath = path.join(__dirname, "db", "db.json");
 
+function getIdNums() {
+  let notes = getNotes();
+  let ids = {};
+  for (let i = 0; i < notes.length; i++) {
+    let id = notes[i].id;
+    ids[id] = true;
+  }
+  return ids;
+}
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -33,17 +43,29 @@ app.get("/api/notes", async function(req, res) {
 
 app.post("/api/notes", function(req, res) {
   let notes = getNotes();
-  notes.push(req.body);
-  console.log(notes);
+  let ids = getIdNums();
+  let newNote = req.body;
+  for (let i = 1; i <= Object.keys(ids).length + 1; i++) {
+    if (!ids[i]) {
+      newNote.id = i;
+      ids[i] = true;
+      break;
+    }
+  }
+  notes.push(newNote);
   writeFileAsync(dbPath, JSON.stringify(notes));
   res.send(notes);
 });
 
-// app.get("/api/notes/:id")
+app.delete("/api/notes/:id", function(req, res) {});
 
 function getNotes() {
   let notes = fs.readFileSync(dbPath, "utf8");
-  notes = JSON.parse(notes);
+  if (!notes) {
+    notes = [];
+  } else {
+    notes = JSON.parse(notes);
+  }
   return notes;
 }
 
