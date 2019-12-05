@@ -8,11 +8,11 @@ Are you a very busy person? Or maybe you're just someone who tends to forget thi
 
   ### Screenshot
  
- (https://github.com/hfurusho/hw11-note-taker/blob/master/examples/screenshot.JPG)
+ ![Screenshot of app](https://github.com/hfurusho/hw11-note-taker/blob/master/examples/screenshot.JPG)
  
   ### Demo
   
-  (https://github.com/hfurusho/hw11-note-taker/blob/master/examples/note-taker-demo.gif)
+  ![gif of app](https://github.com/hfurusho/hw11-note-taker/blob/master/examples/note-taker-demo.gif)
 
 ## Links
 
