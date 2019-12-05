@@ -57,7 +57,18 @@ app.post("/api/notes", function(req, res) {
   res.send(notes);
 });
 
-app.delete("/api/notes/:id", function(req, res) {});
+app.delete("/api/notes/:id", function(req, res) {
+  let delId = parseInt(req.params.id);
+  let notes = getNotes();
+  for (let i = 0; i < notes.length; i++) {
+    if (notes[i].id === delId) {
+      notes.splice(i, 1);
+      break;
+    }
+  }
+  writeFileAsync(dbPath, JSON.stringify(notes));
+  res.end();
+});
 
 function getNotes() {
   let notes = fs.readFileSync(dbPath, "utf8");
