@@ -3,21 +3,11 @@ const path = require("path");
 const fs = require("fs");
 const util = require("util");
 
-const app = express();
-const PORT = process.env.PORT || 3000;
 const writeFileAsync = util.promisify(fs.writeFile);
-const readFileAsync = util.promisify(fs.readFile);
 const dbPath = path.join(__dirname, "db", "db.json");
 
-function getIdNums() {
-  let notes = getNotes();
-  let ids = {};
-  for (let i = 0; i < notes.length; i++) {
-    let id = notes[i].id;
-    ids[id] = true;
-  }
-  return ids;
-}
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -34,7 +24,6 @@ app.get("/", function(req, res) {
 app.get("/api/notes", async function(req, res) {
   try {
     const notes = getNotes();
-    console.log(notes);
     return res.send(notes);
   } catch (err) {
     console.log(err);
@@ -70,6 +59,10 @@ app.delete("/api/notes/:id", function(req, res) {
   res.end();
 });
 
+app.get("*", function(req, res) {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 function getNotes() {
   let notes = fs.readFileSync(dbPath, "utf8");
   if (!notes) {
@@ -78,6 +71,16 @@ function getNotes() {
     notes = JSON.parse(notes);
   }
   return notes;
+}
+
+function getIdNums() {
+  let notes = getNotes();
+  let ids = {};
+  for (let i = 0; i < notes.length; i++) {
+    let id = notes[i].id;
+    ids[id] = true;
+  }
+  return ids;
 }
 
 app.listen(PORT, function() {
